@@ -8,9 +8,9 @@
 </body>
 
 <template name="mainTemplate">
-    <button>Start experiment</button>
-    <!-- <button class="show">Show</button> -->
-    <!-- <button class="hide">Hide</button> -->
+    <button class="start">Start experiment</button>
+    <button class="show">Show</button>
+    <button class="hide">Hide</button>
     <br>
     {{#if showEach}}
         {{> eachTemplate}}
@@ -25,11 +25,13 @@
 </template>
 
 
-    <template name="WrapperTemplate">
-        {{> itemTemplate}}
-    </template>
+<template name="WrapperTemplate">
+    {{> itemTemplate}}
+</template>
 
 
-        <template name="itemTemplate">
-            {{text}}<br>
-        </template>
+<template name="itemTemplate">
+    {{#with itemData}}
+        {{itemContent}}<br>
+    {{/with}}
+</template>

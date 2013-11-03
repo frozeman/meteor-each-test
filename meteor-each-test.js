@@ -7,13 +7,13 @@ if (Meteor.isClient) {
     return Session.get('showEach');
   };
   Template.mainTemplate.events({
-    // 'click .show': function(e){
-    //   Session.set('showEach', true);
-    // },
-    // 'click .hide': function(e){
-    //   Session.set('showEach', false);
-    // },
-    'click button': function () {
+    'click .show': function(e){
+      Session.set('showEach', true);
+    },
+    'click .hide': function(e){
+      Session.set('showEach', false);
+    },
+    'click .start': function () {
       var startTime = +new Date;
       // switch back and forth for 60 seconds.
       setInterval(function () {
@@ -36,12 +36,13 @@ if (Meteor.isClient) {
 
     // fill collection (from an API for example)
     // but only fill, if not empty
-    if(myCollection.find().count() === 0) {
+    if(MyModels.myCollection.find().count() === 0) {
       console.log('fill collection with 20 items');
 
       for (var i = 20 - 1; i >= 0; i--) {
-        myCollection.insert({
-          text: 'My Item #'+ i
+        MyModels.myCollection.insert({
+          text: 'My Item #'+ i,
+          id: i
         });
       };
     }
@@ -50,12 +51,15 @@ if (Meteor.isClient) {
     console.log('Each template hidden');
 
     // clear collection
-    _.each(myCollection.find().fetch(), function(item){
-      myCollection.remove({_id: item._id});
+    _.each(MyModels.myOtherCollection.find().fetch(), function(item){
+      MyModels.myOtherCollection.remove({_id: item._id});
+    });
+    _.each(MyModels.myCollection.find().fetch(), function(item){
+      MyModels.myCollection.remove({_id: item._id});
     });
   };
   Template.eachTemplate.myCollectionListing = function(){
-    return myCollection.find().fetch();
+    return MyModels.myCollection.find().fetch();
   };
 
 
@@ -63,10 +67,25 @@ if (Meteor.isClient) {
   // ITEM TEMPLATE
   Template.itemTemplate.rendered = function(){
     console.log('Item rendered');
+
+    if(!MyModels.myOtherCollection.findOne({itemId: this.data.id})) {
+      MyModels.myOtherCollection.insert({
+        itemContent: 'My Items Content',
+        itemId: this.data.id
+      });
+    }
+
+  };
+  Template.itemTemplate.itemData = function(){
+    return MyModels.myOtherCollection.findOne({itemId: this.id});
   };
 
 
 
-  var myCollection = new Meteor.Collection('myCollection',{connection: null});
+  var MyModels = {
+    myCollection: new Meteor.Collection('myCollection',{connection: null}),
+    myOtherCollection: new Meteor.Collection('myOtherCollection',{connection: null})
+  };
+
 
 }
