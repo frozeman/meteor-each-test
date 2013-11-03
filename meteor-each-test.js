@@ -64,6 +64,13 @@ if (Meteor.isClient) {
 
 
 
+  // WRAPPER TEMPLATE
+  Template.WrapperTemplate.placeItemTemplate = function(){
+    return Template['itemTemplate'];
+  };
+
+
+
   // ITEM TEMPLATE
   Template.itemTemplate.rendered = function(){
     console.log('Item rendered');
